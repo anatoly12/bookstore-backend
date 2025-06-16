@@ -2,8 +2,8 @@ const axios = require("axios");
 
 const BASE_URL = "http://localhost:5000";
 
-const username = "jane";
-const password = "1234";
+const username = "Anatoli";
+const password = "123456";
 
 // Task 6: Register
 async function registerUser() {
@@ -72,12 +72,12 @@ async function deleteReview(isbn) {
 }
 
 // Task 10: Get all books using async/await
-async function getAllBooks() {
+async function getAllBooks(callback) {
   try {
     const response = await axios.get(`${BASE_URL}/books`);
-    console.log("All Books:", response.data);
+    callback(null, response.data);
   } catch (error) {
-    console.error("Error fetching all books:", error.message);
+    console.error("Error fetching all books:", error);
   }
 }
 
@@ -86,7 +86,7 @@ function searchByISBN(isbn) {
   axios
     .get(`${BASE_URL}/books/isbn/${isbn}`)
     .then((response) => {
-      console.log("Book by ISBN:", response.data);
+      console.log("📘 Book Details by ISBN:", response.data);
     })
     .catch((error) => {
       console.error("Error fetching book by ISBN:", error.message);
@@ -113,18 +113,26 @@ async function searchByTitle(title) {
   }
 }
 
+// getAllBooks((err, data) => {
+//   if (err) {
+//     console.error("❌ Error fetching books:", err.message);
+//   } else {
+//     console.log("Get 📚 All Books by using an async callback function:", data);
+//   }
+// });
+
 // 🔁 Call the functions to test
 // loginUser();
-getAllBooks(); // Task 10
-searchByISBN("9781"); // Task 11
+// getAllBooks(); // Task 10
+// searchByISBN("9781"); // Task 11
 searchByAuthor("John Smith"); // Task 12
-searchByTitle("Learn Node.js"); // Task 13
+// searchByTitle("Learn Node.js"); // Task 13
 // modifyReview("9781", "Fantastic book for plant lovers!");
 // getBookReviews("9781");
 // registerUser();
 // deleteReview("9781");
 (async () => {
-  await registerUser();
+  // await registerUser();
   // await loginUser();
   // await modifyReview("9781", "Fantastic book for plant lovers!");
   // await getBookReviews("9781");

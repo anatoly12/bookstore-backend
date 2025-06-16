@@ -5,28 +5,69 @@ app.use(express.json());
 const books = require('./books');
 const users = {}; // { username: { password, reviews: { isbn: review } } }
 
-// Task 1
-app.get('/books', (req, res) => {
-  res.json(books);
+// TASK 10 – Get the book list using a callback wrapped in a Promise
+app.get('/callback/books', function (req, res) {
+  const get_books = new Promise((resolve, reject) => {
+    // simulate async behavior if needed (optional)
+    resolve(Object.values(books));
+  });
+
+  get_books.then((data) => {
+    console.log("📘 Task 10 resolved with book list");
+    res.json(data);
+  }).catch((err) => {
+    res.status(500).json({ message: "Error fetching books" });
+  });
 });
 
-// Task 2
-app.get('/books/isbn/:isbn', (req, res) => {
-  const book = books[req.params.isbn];
-  if (book) return res.json(book);
-  res.status(404).json({ error: 'Book not found' });
-});
+// TASK 11 – Search by ISBN using Promises
+app.get('/promise/isbn/:isbn', function (req, res) {
+  const isbn = req.params.isbn;
 
-// Task 3
-app.get('/books/author/:author', (req, res) => {
-  const result = Object.values(books).filter(b => b.author === req.params.author);
-  res.json(result);
-});
+  const getBookByISBN = new Promise((resolve, reject) => {
+    const book = books[isbn];
+    if (book) {
+      resolve(book);
+    } else {
+      reject("Book not found");
+    }
+  })});
 
-// Task 4
-app.get('/books/title/:title', (req, res) => {
-  const result = Object.values(books).filter(b => b.title === req.params.title);
-  res.json(result);
+// TASK 12 – Search by Author using async/await
+app.get('/async/author/:author', async (req, res) => {
+  try {
+    const author = req.params.author;
+
+    const findBooksByAuthor = () => {
+      return new Promise((resolve) => {
+        const result = Object.values(books).filter(book => book.author === author);
+        resolve(result);
+      });
+    };
+
+    const booksByAuthor = await findBooksByAuthor();
+    res.json(booksByAuthor);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching books by author' });
+  }
+});
+// TASK 13 – Search by Title using async/await
+app.get('/async/title/:title', async (req, res) => {
+  try {
+    const title = req.params.title;
+
+    const findBooksByTitle = () => {
+      return new Promise((resolve) => {
+        const result = Object.values(books).filter(book => book.title === title);
+        resolve(result);
+      });
+    };
+
+    const booksByTitle = await findBooksByTitle();
+    res.json(booksByTitle);
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching books by title' });
+  }
 });
 
 // Task 5
